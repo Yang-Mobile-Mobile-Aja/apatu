@@ -1,30 +1,32 @@
-import 'package:apatu/main.dart';
-import 'package:apatu/pages/login_page.dart';
-import 'package:apatu/pages/profile_page.dart';
-import 'package:apatu/pages/toast_content.dart';
+// ignore_for_file: library_private_types_in_public_api
+
+import 'package:authentication/main.dart';
+import 'package:authentication/presentation/pages/profile_page.dart';
+import 'package:authentication/presentation/pages/sign_up_page.dart';
+import 'package:authentication/presentation/pages/toast_content.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _LoginPageState extends State<LoginPage> {
   //Text controller for text field
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _usernameController.dispose();
     super.dispose();
   }
 
@@ -42,31 +44,16 @@ class _SignUpPageState extends State<SignUpPage> {
     supabase.auth.onAuthStateChange.listen((data) {
       final event = data.event;
       if (event == AuthChangeEvent.signedIn) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const ProfilePage(),
-          ),
-        );
+        context.go('/profile');
       }
     });
   }
 
   Future<AuthResponse> _googleSignIn() async {
-    /// TODO: update the Web client ID with your own.
-    ///
-    /// Web Client ID that you registered with Google Cloud.
     const webClientId =
         '180393303690-m880nn3s3n4aqv7oo8lukm93enmh1vl7.apps.googleusercontent.com';
-
-    /// TODO: update the iOS client ID with your own.
-    ///
-    /// iOS Client ID that you registered with Google Cloud.
     const iosClientId =
         '180393303690-j9otbamckl1s86fd78vk71o4r9molagq.apps.googleusercontent.com';
-
-    // Google sign in on Android will work without providing the Android
-    // Client ID registered on Google Cloud.
-
     final GoogleSignIn googleSignIn = GoogleSignIn(
       clientId: iosClientId,
       serverClientId: webClientId,
@@ -90,12 +77,11 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Future<void> _signUp() async {
+  Future<void> _login() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
-    final username = _usernameController.text.trim();
 
-    if (email.isEmpty || password.isEmpty || username.isEmpty) {
+    if (email.isEmpty || password.isEmpty) {
       fToast.showToast(
         child: const ToastContent(toastMessage: 'All fields are required'),
         gravity: ToastGravity.BOTTOM,
@@ -105,15 +91,14 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     try {
-      final response = await supabase.auth.signUp(
+      final response = await supabase.auth.signInWithPassword(
         email: email,
         password: password,
-        data: {'username': username},
       );
 
       if (response.user != null) {
         fToast.showToast(
-          child: const ToastContent(toastMessage: 'Sign-up successful!'),
+          child: const ToastContent(toastMessage: 'Login successful!'),
           gravity: ToastGravity.BOTTOM,
           toastDuration: const Duration(seconds: 2),
         );
@@ -158,7 +143,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 height: 8,
               ),
               Text(
-                'Sign Up',
+                'Login',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
@@ -167,39 +152,6 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               const SizedBox(
                 height: 16,
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                margin: const EdgeInsets.symmetric(horizontal: 19),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                ),
-                child: TextField(
-                  cursorHeight: 16,
-                  controller: _usernameController,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black,
-                  ),
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    floatingLabelStyle: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                    labelStyle: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.secondary),
-                    label: const Text('username'),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 13,
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -283,19 +235,16 @@ class _SignUpPageState extends State<SignUpPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Have an account?"),
+                  const Text("Don't Have an account?"),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                      );
+                      context.go('/');
                     },
                     style: ButtonStyle(
                       foregroundColor: WidgetStateProperty.all(Colors.blue),
                     ),
                     child: const Text(
-                      "Login",
+                      "Sign Up",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   )
@@ -356,10 +305,10 @@ class _SignUpPageState extends State<SignUpPage> {
                       elevation: 0.25,
                       backgroundColor: Theme.of(context).colorScheme.primary),
                   onPressed: () {
-                    _signUp();
+                    _login();
                   },
                   child: const Text(
-                    'SIGN UP',
+                    'LOGIN',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,

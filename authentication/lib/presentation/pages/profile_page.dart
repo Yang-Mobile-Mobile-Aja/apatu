@@ -1,6 +1,7 @@
-import 'package:apatu/main.dart';
-import 'package:apatu/pages/sign_up_page.dart';
+import 'package:authentication/main.dart';
+import 'package:authentication/presentation/pages/sign_up_page.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -24,35 +25,53 @@ class _ProfilePageState extends State<ProfilePage> {
     final user = supabase.auth.currentUser;
     if (user == null) return;
 
-    final response = await supabase
-        .from('tbl_profiles')
-        .select('user_photo, user_email, username')
-        .eq('user_uuid', user.id)
-        .single();
+    if (user.userMetadata != null && user.userMetadata!['avatar_url'] != null) {
+      setState(() {
+        userPhoto = user.userMetadata!['avatar_url'];
+        username = user.userMetadata!['full_name'];
+        userEmail = user.email;
+      });
+    } else {
+      final response = await supabase
+          .from('tbl_profiles')
+          .select('user_photo, user_email, username')
+          .eq('user_uuid', user.id)
+          .single();
 
-    setState(() {
-      userPhoto = response['user_photo'];
-      userEmail = response['user_email'];
-      username = response['username'];
-    });
+      setState(() {
+        userPhoto = response['user_photo'];
+        userEmail = response['user_email'];
+        username = response['username'];
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: Text(
+          'Profile',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () async {
               await supabase.auth.signOut();
               if (context.mounted) {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const SignUpPage()),
-                );
+                context.go('/');
               }
             },
-            child: const Text('Sign out'),
+            child: Text(
+              'Sign out',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
           )
         ],
       ),
@@ -75,6 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Text(
               username ?? 'Username not found',
               style: Theme.of(context).textTheme.headlineMedium,
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(

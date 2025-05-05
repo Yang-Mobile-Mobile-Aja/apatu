@@ -1,30 +1,31 @@
-// ignore_for_file: library_private_types_in_public_api
-
-import 'package:apatu/main.dart';
-import 'package:apatu/pages/profile_page.dart';
-import 'package:apatu/pages/sign_up_page.dart';
-import 'package:apatu/pages/toast_content.dart';
+import 'package:authentication/main.dart';
+import 'package:authentication/presentation/pages/login_page.dart';
+import 'package:authentication/presentation/pages/profile_page.dart';
+import 'package:authentication/presentation/pages/toast_content.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPageState extends State<SignUpPage> {
   //Text controller for text field
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _usernameController.dispose();
     super.dispose();
   }
 
@@ -42,11 +43,7 @@ class _LoginPageState extends State<LoginPage> {
     supabase.auth.onAuthStateChange.listen((data) {
       final event = data.event;
       if (event == AuthChangeEvent.signedIn) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const ProfilePage(),
-          ),
-        );
+        context.go('/profile');
       }
     });
   }
@@ -90,11 +87,12 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<void> _login() async {
+  Future<void> _signUp() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
+    final username = _usernameController.text.trim();
 
-    if (email.isEmpty || password.isEmpty) {
+    if (email.isEmpty || password.isEmpty || username.isEmpty) {
       fToast.showToast(
         child: const ToastContent(toastMessage: 'All fields are required'),
         gravity: ToastGravity.BOTTOM,
@@ -104,14 +102,15 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     try {
-      final response = await supabase.auth.signInWithPassword(
+      final response = await supabase.auth.signUp(
         email: email,
         password: password,
+        data: {'username': username},
       );
 
       if (response.user != null) {
         fToast.showToast(
-          child: const ToastContent(toastMessage: 'Login successful!'),
+          child: const ToastContent(toastMessage: 'Sign-up successful!'),
           gravity: ToastGravity.BOTTOM,
           toastDuration: const Duration(seconds: 2),
         );
@@ -156,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: 8,
               ),
               Text(
-                'Login',
+                'Sign Up',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
@@ -165,6 +164,39 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(
                 height: 16,
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                margin: const EdgeInsets.symmetric(horizontal: 19),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                ),
+                child: TextField(
+                  cursorHeight: 16,
+                  controller: _usernameController,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                  ),
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    floatingLabelStyle: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    labelStyle: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: Theme.of(context).colorScheme.secondary),
+                    label: const Text('username'),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 13,
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -248,19 +280,16 @@ class _LoginPageState extends State<LoginPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't Have an account?"),
+                  const Text("Have an account?"),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => SignUpPage()),
-                      );
+                      context.go('/login');
                     },
                     style: ButtonStyle(
                       foregroundColor: WidgetStateProperty.all(Colors.blue),
                     ),
                     child: const Text(
-                      "Sign Up",
+                      "Login",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   )
@@ -321,10 +350,10 @@ class _LoginPageState extends State<LoginPage> {
                       elevation: 0.25,
                       backgroundColor: Theme.of(context).colorScheme.primary),
                   onPressed: () {
-                    _login();
+                    _signUp();
                   },
                   child: const Text(
-                    'LOGIN',
+                    'SIGN UP',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
