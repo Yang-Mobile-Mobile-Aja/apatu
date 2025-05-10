@@ -64,8 +64,9 @@ class _SaveScreenState extends State<SavedScreen> {
       setState(() {});
     } catch (e) {
       debugPrint('Error deleting Image :$e');
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed To Delete Image')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Failed To Delete Image')));
     }
   }
 
@@ -75,8 +76,9 @@ class _SaveScreenState extends State<SavedScreen> {
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Delete All Saved Images'),
-          content:
-              const Text('Are you sure you want to delete all Saved Images?'),
+          content: const Text(
+            'Are you sure you want to delete all Saved Images?',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext, false),
@@ -121,13 +123,9 @@ class _SaveScreenState extends State<SavedScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Data Error: ${snapshot.error}'),
-            );
+            return Center(child: Text('Data Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
-              child: Text('No Saved Images Found'),
-            );
+            return Center(child: Text('No Saved Images Found'));
           }
 
           final images = snapshot.data!;
@@ -140,18 +138,20 @@ class _SaveScreenState extends State<SavedScreen> {
 
               return Slidable(
                 key: ValueKey(saved),
-                endActionPane:
-                    ActionPane(motion: const DrawerMotion(), children: [
-                  SlidableAction(
-                    onPressed: (context) async {
-                      await deleteSavedImage(saved, context);
-                    },
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
-                    icon: Icons.delete,
-                    label: 'Delete',
-                  ),
-                ]),
+                endActionPane: ActionPane(
+                  motion: const DrawerMotion(),
+                  children: [
+                    SlidableAction(
+                      onPressed: (context) async {
+                        await deleteSavedImage(saved, context);
+                      },
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      icon: Icons.delete,
+                      label: 'Delete',
+                    ),
+                  ],
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -160,14 +160,12 @@ class _SaveScreenState extends State<SavedScreen> {
                     children: [
                       picture['id'] != null
                           ? Image.network(
-                              picture['picture'],
-                              width: double.infinity,
-                              height: 30,
-                            )
+                            picture['picture'],
+                            width: double.infinity,
+                            height: 30,
+                          )
                           : Icon(Icons.picture_in_picture),
-                      const SizedBox(
-                        height: 12,
-                      ),
+                      const SizedBox(height: 12),
                       Text(
                         picture['text_recognition'],
                         maxLines: 3,

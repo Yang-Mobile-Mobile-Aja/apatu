@@ -1,10 +1,10 @@
 import 'package:authentication/presentation/pages/login_page.dart';
-import 'package:authentication/presentation/pages/profile_page.dart';
 import 'package:authentication/presentation/pages/sign_up_page.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:scanner/scanner.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,9 +39,22 @@ class MyApp extends StatelessWidget {
         name: PROFILE_PAGE_ROUTE,
         path: '/profile',
         builder: (context, state) {
-          return ProfilePage();
+          return ProfileScreen();
         },
       ),
+      GoRoute(
+        name: SCANNER_PAGE_ROUTE,
+        path: '/scanner',
+        builder: (context, state) {
+          return ScannerScreen();
+        },
+      ),
+      GoRoute(
+          name: SAVED_PAGE_ROUTE,
+          path: '/bookmark',
+          builder: (context, state) {
+            return SavedScreen();
+          })
     ],
   );
 
