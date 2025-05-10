@@ -1,14 +1,10 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'package:authentication/main.dart';
-import 'package:authentication/presentation/pages/profile_page.dart';
-import 'package:authentication/presentation/pages/sign_up_page.dart';
-import 'package:authentication/presentation/pages/toast_content.dart';
+import 'package:auth/presentation/pages/toast_content.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatefulWidget {
@@ -22,6 +18,8 @@ class _LoginPageState extends State<LoginPage> {
   //Text controller for text field
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  final supabase = Supabase.instance.client;
 
   @override
   void dispose() {

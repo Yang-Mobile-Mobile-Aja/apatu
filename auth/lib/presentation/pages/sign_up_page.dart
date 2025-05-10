@@ -1,7 +1,4 @@
-import 'package:authentication/main.dart';
-import 'package:authentication/presentation/pages/login_page.dart';
-import 'package:authentication/presentation/pages/profile_page.dart';
-import 'package:authentication/presentation/pages/toast_content.dart';
+import 'package:auth/presentation/pages/toast_content.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
@@ -21,6 +18,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
 
+  final supabase = Supabase.instance.client;
   @override
   void dispose() {
     _emailController.dispose();
@@ -134,16 +132,15 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               Text(
                 'Team App Project',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontSize: 35,
-                    fontWeight: FontWeight.w700),
+                  color: Theme.of(context).colorScheme.primary,
+                  fontSize: 35,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               Container(
                 width: double.infinity,
@@ -151,20 +148,17 @@ class _SignUpPageState extends State<SignUpPage> {
                 padding: const EdgeInsetsDirectional.symmetric(horizontal: 19),
                 child: Image.asset('assets/images/app_logo.png'),
               ),
-              const SizedBox(
-                height: 8,
-              ),
+              const SizedBox(height: 8),
               Text(
                 'Sign Up',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700),
+                  color: Theme.of(context).colorScheme.primary,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-              const SizedBox(
-                height: 16,
-              ),
+              const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 margin: const EdgeInsets.symmetric(horizontal: 19),
@@ -188,16 +182,15 @@ class _SignUpPageState extends State<SignUpPage> {
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                     labelStyle: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.secondary),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
                     label: const Text('username'),
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 13,
-              ),
+              const SizedBox(height: 13),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 margin: const EdgeInsets.symmetric(horizontal: 19),
@@ -221,16 +214,15 @@ class _SignUpPageState extends State<SignUpPage> {
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                     labelStyle: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.secondary),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
                     label: const Text('email'),
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 13,
-              ),
+              const SizedBox(height: 13),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 margin: const EdgeInsets.symmetric(horizontal: 19),
@@ -255,9 +247,10 @@ class _SignUpPageState extends State<SignUpPage> {
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                     labelStyle: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.secondary),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
                     suffixIcon: IconButton(
                       onPressed: () {
                         (!isVisibilityPassword)
@@ -292,13 +285,10 @@ class _SignUpPageState extends State<SignUpPage> {
                       "Login",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  )
+                  ),
                 ],
               ),
-              Text(
-                'Or With',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              Text('Or With', style: Theme.of(context).textTheme.titleMedium),
               SizedBox(height: 16),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 19),
@@ -325,39 +315,40 @@ class _SignUpPageState extends State<SignUpPage> {
                       SizedBox(width: 16),
                       Text(
                         'Login With Google',
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.blueGrey,
-                                ),
-                      )
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.blueGrey,
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 24,
-              ),
+              const SizedBox(height: 24),
               Container(
                 width: double.infinity,
                 height: 56,
                 margin: const EdgeInsets.symmetric(horizontal: 19),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      elevation: 0.25,
-                      backgroundColor: Theme.of(context).colorScheme.primary),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    elevation: 0.25,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                  ),
                   onPressed: () {
                     _signUp();
                   },
                   child: const Text(
                     'SIGN UP',
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700),
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),

@@ -1,5 +1,4 @@
-import 'package:authentication/presentation/pages/login_page.dart';
-import 'package:authentication/presentation/pages/sign_up_page.dart';
+import 'package:auth/auth.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

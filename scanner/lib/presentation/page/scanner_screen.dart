@@ -13,7 +13,7 @@ class ScannerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Text Image Recognition With AI'),
+        title: Text('Apatu Scanner'),
         actions: [
           IconButton(
             onPressed: () {
@@ -27,10 +27,11 @@ class ScannerScreen extends StatelessWidget {
         create: (context) => ScannerCubit(),
         child: ScannerView(),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.list),
-      ),
+      //todo: don't add button with no function
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {},
+      //   child: Icon(Icons.list),
+      // ),
     );
   }
 }

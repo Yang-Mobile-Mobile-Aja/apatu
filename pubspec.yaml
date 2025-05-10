@@ -29,8 +29,8 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
 # local depedencies
-  authentication:
-    path: authentication
+  auth:
+    path: auth
   core:
     path: core
   scanner:
