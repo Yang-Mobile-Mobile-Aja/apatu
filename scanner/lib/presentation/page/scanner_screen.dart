@@ -4,11 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scanner/presentation/cubit/scanner_cubit.dart';
 import 'package:scanner/presentation/cubit/scanner_state.dart';
-import 'package:scanner/presentation/page/saved_screen.dart';
 import 'package:share_plus/share_plus.dart';
 
-class ScannerPage extends StatelessWidget {
-  const ScannerPage({super.key});
+class ScannerScreen extends StatelessWidget {
+  const ScannerScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +17,7 @@ class ScannerPage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SavedScreen()),
-              );
+              context.go('/bookmark');
             },
             icon: Icon(Icons.person_2_rounded),
           ),
