@@ -41,7 +41,7 @@ class _SignUpPageState extends State<SignUpPage> {
     supabase.auth.onAuthStateChange.listen((data) {
       final event = data.event;
       if (event == AuthChangeEvent.signedIn) {
-        context.go('/profile');
+        context.go('/scanner');
       }
     });
   }

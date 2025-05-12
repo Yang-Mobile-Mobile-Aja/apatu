@@ -1,4 +1,3 @@
-// import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -17,7 +16,7 @@ class ScannerScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              context.go('/bookmark');
+              context.go('/profile');
             },
             icon: Icon(Icons.person_2_rounded),
           ),
@@ -46,56 +45,69 @@ class ScannerView extends StatelessWidget {
         // Optional: Show a snackbar or handle additional side effects
       },
       builder: (context, state) {
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              state.imageFile == null
-                  ? Text('Select an image to analyze')
-                  : Image.file(
-                    state.imageFile!,
-                    height: 70,
-                    width: double.infinity,
-                  ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<ScannerCubit>().pickImage();
-                },
-                child: Text('Pick Image'),
-              ),
-              SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0, left: 16.0),
-                child: Text(
-                  state.extractedText.isNotEmpty
-                      ? state.extractedText
-                      : 'Extracted text will appear here',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-              const SizedBox(height: 16),
-              if (state.imageFile != null &&
-                  state.extractedText.isNotEmpty) ...[
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                state.imageFile == null
+                    ? Text('Select an image to analyze')
+                    : Image.file(
+                      state.imageFile!,
+                      height: 200,
+                      width: double.infinity,
+                    ),
+                SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    context.read<ScannerCubit>().saveToSupabase(context);
+                    context.read<ScannerCubit>().pickImage();
                   },
-                  child: Text('Save'),
+                  child: Text('Pick Image'),
                 ),
-                SizedBox(height: 10),
-                ElevatedButton.icon(
-                  onPressed: () async {
-                    final text = state.extractedText;
-                    if (text.isNotEmpty) {
-                      SharePlus.instance.share(ShareParams(text: text));
-                    }
-                  },
-                  icon: Icon(Icons.share),
-                  label: Text('Share'),
+                SizedBox(height: 20),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Text(
+                    state.extractedText.isNotEmpty
+                        ? state.extractedText
+                        : 'Extracted text will appear here',
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
+                const SizedBox(height: 16),
+                if (state.imageFile != null &&
+                    state.extractedText.isNotEmpty) ...[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          context.read<ScannerCubit>().saveToSupabase(context);
+                        },
+                        child: Text('Save'),
+                      ),
+                      SizedBox(width: 16),
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          final text = state.extractedText;
+                          if (text.isNotEmpty) {
+                            SharePlus.instance.share(ShareParams(text: text));
+                          }
+                        },
+                        icon: Icon(Icons.share),
+                        label: Text('Share'),
+                      ),
+                    ],
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         );
       },

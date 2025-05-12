@@ -1,0 +1,2 @@
+/Users/hashfihazazi/Desktop/apatu/android/app/.cxx/RelWithDebInfo/22h26576/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/hashfihazazi/Desktop/apatu/android/app/.cxx/RelWithDebInfo/22h26576/arm64-v8a/CMakeFiles/rebuild_cache.dir

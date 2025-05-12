@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         name: PROFILE_PAGE_ROUTE,
         path: '/profile',
         builder: (context, state) {
-          return ProfileScreen();
+          return ProfilePage();
         },
       ),
       GoRoute(

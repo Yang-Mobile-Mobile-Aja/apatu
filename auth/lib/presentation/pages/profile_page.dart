@@ -19,6 +19,7 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     _fetchUserProfile();
   }
+
   final supabase = Supabase.instance.client;
 
   Future<void> _fetchUserProfile() async {
@@ -32,11 +33,12 @@ class _ProfilePageState extends State<ProfilePage> {
         userEmail = user.email;
       });
     } else {
-      final response = await supabase
-          .from('tbl_profiles')
-          .select('user_photo, user_email, username')
-          .eq('user_uuid', user.id)
-          .single();
+      final response =
+          await supabase
+              .from('tbl_profiles')
+              .select('user_photo, user_email, username')
+              .eq('user_uuid', user.id)
+              .single();
 
       setState(() {
         userPhoto = response['user_photo'];
@@ -68,12 +70,16 @@ class _ProfilePageState extends State<ProfilePage> {
             },
             child: Text(
               'Sign out',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
+              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
             ),
-          )
+          ),
         ],
+        leading: IconButton(
+          onPressed: () {
+            context.go('/scanner');
+          },
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+        ),
       ),
       body: Center(
         child: Column(
